@@ -111,6 +111,7 @@ def encode_features(features):
     return pd.DataFrame([encoded], columns=columns)
 
 #load model
+@st.cache_resource
 def load_model():
     try:
         model = joblib.load(Path(os.getcwd()).parent.parent/'downloads'/'playground_series_s5e10'/'road_risk_model.pkl')
