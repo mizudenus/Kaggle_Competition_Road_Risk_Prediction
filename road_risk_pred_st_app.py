@@ -118,8 +118,8 @@ from kaggle.api.kaggle_api_extended import KaggleApi
 from io import BytesIO
 
 #for streamlit cloud
-#os.environ['KAGGLE_USERNAME'] = st.secrets["KAGGLE_USERNAME"]
-#os.environ['KAGGLE_KEY'] = st.secrets['KAGGLE_KEY']
+os.environ['KAGGLE_USERNAME'] = st.secrets["KAGGLE_USERNAME"]
+os.environ['KAGGLE_KEY'] = st.secrets['KAGGLE_KEY']
 
 @st.cache_resource
 def load_model():
