@@ -3,8 +3,8 @@ from pyexpat import features
 import streamlit as st
 import pandas as pd
 import joblib
-from pathlib import Path
-import tempfile
+#from pathlib import Path
+#import tempfile
 import os
 
 
@@ -113,45 +113,50 @@ def encode_features(features):
     return pd.DataFrame([encoded], columns=columns)
 
 #load model
-from kaggle.api.kaggle_api_extended import KaggleApi
-from io import BytesIO
+#from kaggle.api.kaggle_api_extended import KaggleApi
+#from io import BytesIO
+import kagglehub
 
 #for streamlit cloud
-os.environ['KAGGLE_USERNAME'] = st.secrets["KAGGLE_USERNAME"]
-os.environ['KAGGLE_KEY'] = st.secrets['KAGGLE_KEY']
+#os.environ['KAGGLE_USERNAME'] = st.secrets["KAGGLE_USERNAME"]
+#os.environ['KAGGLE_KEY'] = st.secrets['KAGGLE_KEY']
+
 
 @st.cache_resource
 def load_model():
+
     try:
         #model = joblib.load(Path(os.getcwd()).parent.parent/'downloads'/'playground_series_s5e10'/'road_risk_model.pkl')
         #switch to use kaggle (model.pkl stored, as git not support big file ,*pkl > 2G
-        api = KaggleApi()
-        api.authenticate()
-
-        with (tempfile.NamedTemporaryFile(delete = False,suffix = ".pkl") as temp_file):
-            temp_path = temp_file.name
-
-        #'KaggleApi' downloaded dataset as *.zip
-        #res =
-        api.dataset_download_file(
-            dataset = 'sieges/road-risk-predict-model-pkl',
-            file_name = 'road_risk_model.pkl',
-            path = BytesIO() #in memory
-        )
-
-        zip_path = str(Path(temp_path).parent/'road_risk_model.pkl.zip')
-        import zipfile
-        with zipfile.ZipFile(zip_path,'r') as zip_ref:
-            extracted_path = Path(temp_path).parent/'road_risk_model.pkl'
-            zip_ref.extractall(extracted_path)
-
-        with open(extracted_path,'rb') as f:
-            model = joblib.load(f)
-
-        #clean temp files
-        os.unlink(zip_path)
-        os.unlink(extracted_path)
-
+        # api = KaggleApi()
+        # api.authenticate()
+        #
+        # with (tempfile.NamedTemporaryFile(delete = False,suffix = ".pkl") as temp_file):
+        #     temp_path = temp_file.name
+        #
+        # #'KaggleApi' downloaded dataset as *.zip
+        # #res =
+        # api.dataset_download_file(
+        #     dataset = 'sieges/road-risk-predict-model-pkl',
+        #     file_name = 'road_risk_model.pkl',
+        #     path = Path(temp_path).parent
+        # )
+        #
+        # zip_path = str(Path(temp_path).parent/'road_risk_model.pkl.zip')
+        # import zipfile
+        # with zipfile.ZipFile(zip_path,'r') as zip_ref:
+        #     extracted_path = Path(temp_path).parent/'road_risk_model.pkl'
+        #     zip_ref.extractall(extracted_path)
+        #
+        # with open(extracted_path,'rb') as f:
+        #     model = joblib.load(f)
+        #
+        # #clean temp files
+        # os.unlink(zip_path)
+        # os.unlink(extracted_path)
+        path = kagglehub.dataset_download("sieges/road-risk-predict-model-pkl")
+        model_path = os.path.join(path, "road_risk_model.pkl")
+        model = joblib.load(model_path)
         return model
 
     except Exception as e:
