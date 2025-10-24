@@ -118,8 +118,8 @@ def encode_features(features):
 import kagglehub
 
 #for streamlit cloud
-#os.environ['KAGGLE_USERNAME'] = st.secrets["KAGGLE_USERNAME"]
-#os.environ['KAGGLE_KEY'] = st.secrets['KAGGLE_KEY']
+os.environ['KAGGLE_USERNAME'] = st.secrets["KAGGLE_USERNAME"]
+os.environ['KAGGLE_KEY'] = st.secrets['KAGGLE_KEY']
 
 
 @st.cache_resource
